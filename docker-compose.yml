@@ -1,0 +1,31 @@
+# Serviços de apoio para desenvolvimento. A API e o site rodam fora do Docker (npm run ...).
+services:
+  postgres:
+    image: postgres:18-alpine
+    container_name: maestria-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: maestria
+      POSTGRES_PASSWORD: maestria
+      POSTGRES_DB: maestria
+    ports:
+      - "5432:5432"   # se a 5432 já estiver em uso, troque para "5433:5432" e ajuste o DATABASE_URL
+    volumes:
+      # A partir do PostgreSQL 18, a imagem oficial usa /var/lib/postgresql como ponto de montagem
+      - postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U maestria -d maestria"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: maestria-mailpit
+    restart: unless-stopped
+    ports:
+      - "1025:1025"   # SMTP (a API envia para cá)
+      - "8025:8025"   # caixa de entrada no navegador: http://localhost:8025
+
+volumes:
+  postgres-data:

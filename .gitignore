@@ -1,0 +1,11 @@
+node_modules/
+.env
+.env.local
+dist/
+.next/
+coverage/
+api/uploads/
+api/src/generated/
+
+# link local para o repositório de agentes
+.claude/agents
